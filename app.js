@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require("cors");
 const mongoose = require('mongoose');
+mongoose.set('strictQuery', false);
 mongoose.connect('mongodb://localhost:27017/', () =>{
     console.log('Connected to the database');
 })
@@ -15,7 +16,7 @@ const port = 3000;
 app.use(cors());  //  (Cross-Origin Resource Sharing). Permet de contrôler les accès à une API provenant de domaines externes et protéger les ressources.
 // app.use(cors({credentials: true, origin: true}))
 app.use(express.json()); //req.body
-app.use(express.urlencoded({extended: false}));  // permet d'accéder aux différents champs de formulaire
+app.use(express.urlencoded({extended: false}));  // permet d'accéder aux différents champs de formulaire. {extended: false} indique à Express d'utiliser un parseur simple
 
 
 // Routes : checked!
