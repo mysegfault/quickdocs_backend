@@ -1,15 +1,14 @@
-import mongoose from "mongoose";
-const { Schema } = mongoose;
+const mongoose = require("mongoose");
 
 const gridSchema = new mongoose.Schema({
     grid_title: { type: String, required: true, unique: true},
     grid_level: { type: String },
-    course_type: { type: String },
-    course_hours: { type: String },
+    grid_course_type: { type: String },
+    grid_course_hours: { type: String },
     grid_other_infos: [{ type: String }],
     grid_firstname: { type: String },
     grid_lastname: { type: String },
-    complete_hours: { type: String },
+    grid_complete_hours: { type: String },
     grid_icdl: { type: String },
     evaluation_array: [{
         session: { type: String },
@@ -25,7 +24,7 @@ const gridSchema = new mongoose.Schema({
     }],
     generic_array: [{
         session: { type: String },
-        notions: [{ type: String }],
+        generic_notions: [{ type: String }],
         objectives_generic: [{
             objective_g_title: { type: String },
             notions: [{
@@ -45,4 +44,6 @@ const gridSchema = new mongoose.Schema({
     }]
 })
 
-module.exports = mongoose.model("Grid", gridSchema);
+const Grid = mongoose.model("Grid", gridSchema);
+
+module.exports = { Grid }
