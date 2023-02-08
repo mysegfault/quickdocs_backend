@@ -1,7 +1,9 @@
 const mongoose = require("mongoose");
 
 const gridSchema = new mongoose.Schema({
-    grid_title: { type: String, required: true, unique: true},
+    grid_file_title: { type: String, required: true, unique: true},
+    grid_grid: { type: String, required: true },
+    grid_course_title: { type: String, required: true },
     grid_level: { type: String },
     grid_course_type: { type: String },
     grid_course_hours: { type: String },

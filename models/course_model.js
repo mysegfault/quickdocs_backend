@@ -16,8 +16,8 @@ const courseSchema = new mongoose.Schema({
     course_pedagogies: [{ type: String }],
     course_objectives: [{ type: String }],
     course_program: [{ 
-        program_title: { type: string },
-        program_content: { type: string }
+        program_title: { type: String },
+        program_content: { type: String }
      }]
 })
 

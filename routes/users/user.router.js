@@ -1,20 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const mongoose = require('mongoose');
-const { User } = require("../../models/user_model");
-const { auth, getUsers, postUser, postLogin, getUser, putUser, deleteUser} = require('./user.controller');
+const { auth, getUsers, postUser, postLogin, getUser, putUser, deleteUser } = require('./user.controller');
 
 
-
-
-router.route('/users')
-    .get(getUsers)
-
-
-
-router.route('/register')
-    .post(postUser)
-
+// Les routes utiles pour le front
 router.route('/login')
     .post(postLogin)
 
@@ -24,5 +13,14 @@ router.route('/user')
 router.route('/user/:id')
     .patch(putUser)
     .delete(deleteUser)
+
+
+// Les routes ci-dessous n'apparaitront pas en front.
+router.route('/users')
+    .get(getUsers)
+
+router.route('/register')
+    .post(postUser)
+
 
 module.exports = router;

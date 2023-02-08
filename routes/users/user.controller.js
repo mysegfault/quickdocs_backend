@@ -3,12 +3,11 @@ const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const { User } = require("../../models/user_model");
 const bcrypt = require('bcrypt');
-const { userInfo } = require('os');
 // pour renforcer le hachage de password :
 const saltRounds = 10;
 
 
-// Fonction pour obtenir le liste de tous les users
+// Fonction pour obtenir la liste de tous les users
 exports.getUsers = (async (req, res) => {
     try {
 
@@ -20,6 +19,7 @@ exports.getUsers = (async (req, res) => {
 
     } catch (err) {
         console.error(err.message);
+        res.status(500).json({ error: 'Failed to get users from database' });
     }
 })
 

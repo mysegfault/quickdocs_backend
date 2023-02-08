@@ -7,6 +7,7 @@ mongoose.set('strictQuery', false);
 mongoose.connect(process.env.MONGO_URI, () =>{
     console.log('Connected to the database');
 })
+
 // chemin quand il y aura l'auth
 // main().catch(err => console.log(err));
 
@@ -17,26 +18,26 @@ mongoose.connect(process.env.MONGO_URI, () =>{
 // }
 
 
+// import des routes
+const routerUser = require('./routes/users/user.router');
+const routerCourse = require('./routes/courses/course.router');
+const routerGrid = require('./routes/grids/grid.router');
+
+
 const app = express();
 const port = 3000;
 
 
-// import des routes
-const routerUser = require('./routes/users/user.router')
-
-
 
 // middleware pour la connexion entre notre application et notre BDD
-app.use(cors());  //  (Cross-Origin Resource Sharing). Permet de contrôler les accès à une API provenant de domaines externes et protéger les ressources.
+app.use(cors())  //  (Cross-Origin Resource Sharing). Permet de contrôler les accès à une API provenant de domaines externes et protéger les ressources.
 // app.use(cors({credentials: true, origin: true}))
 app.use(express.json()); //req.body
 app.use(express.urlencoded({extended: false}));  // permet d'accéder aux différents champs de formulaire. {extended: false} indique à Express d'utiliser un parseur simple
 
 
 // mobilisation des routers
-app.use(routerUser)
-
-
+app.use(routerUser, routerCourse, routerGrid)
 
 
 
