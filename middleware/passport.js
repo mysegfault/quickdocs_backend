@@ -2,11 +2,22 @@ require('dotenv').config()
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
+
+passport.serializeUser(function(user, done) {
+  done(null, user);
+});
+
+passport.deserializeUser(function(user, done) {
+      done(null, user);
+});
+
+
+
 // Créez une nouvelle instance de la stratégie Google OAuth2
 passport.use(new GoogleStrategy({
   clientID: 'process.env.CLIENT_ID',
   clientSecret: 'process.env.CLIENT_SECRET',
-  callbackURL: 'http://localhost:3000/auth/google/callback'
+  callbackURL: 'http://localhost:3000/google/callback'
 },
 
   // La fonction de rappel de la stratégie Google OAuth2
@@ -28,11 +39,11 @@ passport.use(new GoogleStrategy({
   }
 ));
 
-// Créez une route pour l'authentification Google OAuth2
-app.get('/auth/google', passport.authenticate('google', { scope: ['profile'] }));
+// // Créez une route pour l'authentification Google OAuth2
+// app.get('/auth/google', passport.authenticate('google', { scope: ['profile'] }));
 
-// Créez une route de rappel pour l'authentification Google OAuth2
-app.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/login' }), function (req, res) {
-  // Redirigez l'utilisateur vers la page souhaitée une fois connecté
-  res.redirect('/dashboard');
-});
+// // Créez une route de rappel pour l'authentification Google OAuth2
+// app.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/login' }), function (req, res) {
+//   // Redirigez l'utilisateur vers la page souhaitée une fois connecté
+//   res.redirect('/dashboard');
+// });

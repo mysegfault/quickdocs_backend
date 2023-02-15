@@ -2,7 +2,9 @@ const express = require("express");
 const cors = require("cors");
 require('dotenv').config();
 const axios = require('axios'); // Promise based HTTP client for the browser and node.js
+const cookieSession = require('cookie-session');
 const passport = require('passport');
+require('./middleware/passport');
 
 
 
@@ -28,6 +30,24 @@ const routerProgram = require('./routes/programs/program.router');
 
 const app = express();
 const port = 3000;
+
+
+app.use(cookieSession({
+  name: 'google-auth-session',
+  keys: ['key1', 'key2']
+}))
+
+const isLoggedIn = (req, res, next) => {
+    if (req.user) {
+        next();
+    } else {
+        res.sendStatus(401);
+    }
+}
+
+app.use(passport.initialize());
+app.use(passport.session());
+
 
 
 // middleware pour la connexion entre notre application et notre BDD
@@ -74,6 +94,46 @@ app.use(routerProgram)
 
 //     res.send(getRows.data);
 // })
+
+
+
+
+app.get("/", (req, res) => {
+  res.json({message: "You are not logged in"})
+})
+
+app.get("/failed", (req, res) => {
+  res.send("Failed")
+})
+app.get("/success",isLoggedIn, (req, res) => {
+  res.send(`Welcome ${req.user.email}`)
+})
+
+app.get('/google',
+  passport.authenticate('google', {
+          scope:
+              ['email', 'profile']
+      }
+  ));
+
+app.get('/google/callback',
+  passport.authenticate('google', {
+      failureRedirect: '/failed',
+  }),
+  function (req, res) {
+      res.redirect('/success')
+
+  }
+);
+
+app.get("/logout", (req, res) => {
+  req.session = null;
+  req.logout();
+  res.redirect('/');
+})
+
+
+
 
 app.listen(port, () => {
     console.log(`L'application est lancée sur le port : ${port}`);
