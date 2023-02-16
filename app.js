@@ -2,12 +2,12 @@ const express = require("express");
 const cors = require("cors");
 require('dotenv').config();
 const axios = require('axios'); // Promise based HTTP client for the browser and node.js
-const cookieSession = require('cookie-session');
+const session = require('express-session');
 const passport = require('passport');
 require('./middleware/passport');
 
 
-
+// -------------------Mongoose---------------------------
 // const mongoose = require('mongoose');
 // mongoose.set('strictQuery', false);
 // mongoose.connect(process.env.MONGO_URI, () => {
@@ -22,21 +22,42 @@ require('./middleware/passport');
 //         console.log('Connected to the database');
 //     })
 // }
+// -------------------------------------------------------
 
 
 // import des routes
-// const routerUser = require('./routes/users/user.router');
+const routerConnection = require('./routes/connections/connection.router');
 const routerProgram = require('./routes/programs/program.router');
 
 const app = express();
 const port = 3000;
 
 
-app.use(cookieSession({
-  name: 'google-auth-session',
-  keys: ['key1', 'key2']
-}))
+// middleware pour la connexion entre notre application et notre BDD
+app.use(cors());  //  (Cross-Origin Resource Sharing). Permet de contrôler les accès à une API provenant de domaines externes et protéger les ressources.
+// app.use(cors({credentials: true, origin: true}))
+app.use(express.json()); //req.body
+app.use(express.urlencoded({extended: false}));  // permet d'accéder aux différents champs de formulaire. {extended: false} indique à Express d'utiliser un parseur simple
 
+
+// mobilisation des routers
+app.use(routerProgram, routerConnection);
+
+
+// ------------------------------------middelware pour le passport-----------------------------------------
+app.use(session({
+  secret: 'Authentification',
+  resave: false,
+  saveUninitialized: false
+}));
+
+
+// Initialiser Passport et l'ajouter au middleware de l'application
+app.use(passport.initialize());
+app.use(passport.session());
+
+// notre middleware qui permet de voir si l'utilisateur s'est connecté lorsqu'il essaye d'accéder à l'applications
+// On place ce middleware sur la route /success (plus tard: /programmes)
 const isLoggedIn = (req, res, next) => {
     if (req.user) {
         next();
@@ -45,92 +66,35 @@ const isLoggedIn = (req, res, next) => {
     }
 }
 
-app.use(passport.initialize());
-app.use(passport.session());
+// ---------------------------------------------------------------
 
 
+// ------------------------------------routes pour le passport-----------------------------------------
 
-// middleware pour la connexion entre notre application et notre BDD
-app.use(cors())  //  (Cross-Origin Resource Sharing). Permet de contrôler les accès à une API provenant de domaines externes et protéger les ressources.
-// app.use(cors({credentials: true, origin: true}))
-app.use(express.json()); //req.body
-app.use(express.urlencoded({extended: true}));  // permet d'accéder aux différents champs de formulaire. {extended: false} indique à Express d'utiliser un parseur simple
-
-
-// mobilisation des routers
-app.use(routerProgram)
-// routerUser, 
-
-// app.get("/", async (req, res) => {
-
-//     const auth = new google.auth.GoogleAuth({
-//         keyFile: "credentials.json", // le nom du fichier comprenant notre clé sheet
-//         scopes: "https://www.googleapis.com/auth/spreadsheets" // URL de l'API google sheets
-//     })
-
-//     // creation d'un client pour auth
-//     const client = await auth.getClient();
-
-//     // Créons un objet google sheet. On l'utilisera pour accéder à nos informations
-//     const googleSheets = google.sheets({version: "v4", auth: client})
-
-//     // On stocke l'id de notre feuille de calcul dans une variable pour la réutiliser plus facilement après.
-//     // Dans le lien de notre fichier sheets, c'est la partie entre "...d/" et "/edit..."
-//     const spreadsheetId = "1kbbO4MP3NcBRPoJnZFQz5MZXi604GuJy2KzBuWzZFo0";
-
-//     // Test pour vérifier qu'arrive à accéder à notre feuille de calcul
-//     const metaData = await googleSheets.spreadsheets.get({
-//         auth, // l'accès
-//         spreadsheetId // l'id de la feuille de calcul
-//     });
-
-//     // Test de lecture de lignes : 
-//     const getRows = await googleSheets.spreadsheets.values.get({
-//         auth, 
-//         spreadsheetId,
-//         range: "bdd_programmes" // le nom de la feuille de calcul souhaitée + les colonnes (lettres) et ou  les lignes (chiffre) qu'on souhaite afficher. Note : chaque ligne est stockée dans un tableau
-//     });
-
-
-//     res.send(getRows.data);
-// })
-
-
-
-
-app.get("/", (req, res) => {
-  res.json({message: "You are not logged in"})
-})
-
-app.get("/failed", (req, res) => {
-  res.send("Failed")
-})
+// Si succès de la connexion (mais ce sera supprimer par la suite puisqu'on sera rediriger vers la page /programmes directement)
 app.get("/success",isLoggedIn, (req, res) => {
-  res.send(`Welcome ${req.user.email}`)
+  res.send(`Bienvenue ${req.user.displayName}`)
 })
 
-app.get('/google',
-  passport.authenticate('google', {
+
+//  pour s'authentifier avec son compte google
+app.get('/google', passport.authenticate('google', {
           scope:
               ['email', 'profile']
       }
   ));
 
-app.get('/google/callback',
-  passport.authenticate('google', {
-      failureRedirect: '/failed',
-  }),
+
+  // chemin de redirection grâce à authentificate, qui nous mène soit à /echec soit à /success (ou plus tard à /programmes)
+app.get('/google/callback', passport.authenticate('google', { failureRedirect: '/failed'}),
+  // Succès d'authentification, on redirige vers la page qui nous interesse( changer par /programmes)
   function (req, res) {
       res.redirect('/success')
-
   }
 );
 
-app.get("/logout", (req, res) => {
-  req.session = null;
-  req.logout();
-  res.redirect('/');
-})
+// ------------------------------------------------------------------------------
+
 
 
 
