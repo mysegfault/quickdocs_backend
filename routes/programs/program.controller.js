@@ -11,30 +11,32 @@ exports.getProgramsList = (async (req, res) => {
             keyFile: "credentials.json", // le nom du fichier comprenant notre clé sheet
             scopes: "https://www.googleapis.com/auth/spreadsheets" // URL de l'API google sheets
         })
-    
+
         // creation d'un client pour auth
         const client = await auth.getClient();
-    
+
         // Créons un objet google sheet. On l'utilisera pour accéder à nos informations
-        const googleSheets = google.sheets({version: "v4", auth: client})
-    
+        const googleSheets = google.sheets({ version: "v4", auth: client })
+
         // On stocke l'id de notre feuille de calcul dans une variable pour la réutiliser plus facilement après.
         // Dans le lien de notre fichier sheets, c'est la partie entre "...d/" et "/edit..."
-        const spreadsheetId = process.env.SHEET_ID;
+        const spreadsheetId = `${process.env.SHEET_ID}`; // l'id de lea feuille de calcul
+        const range = "bdd_programmes!A2:A100" // A partir de la ligne 2, toute la colonnes A 
+        // Note : chaque ligne est stockée dans un tableau
 
 
 
         // ------------------------------ ACCES DATA INSIDE --------------------------
- 
+
         // const { program_title } = req.body
 
         const getRows = await googleSheets.spreadsheets.values.get({
             auth, // l'accès
-            spreadsheetId, // l'id de lea feuille de calcul
-            range: "bdd_programmes!A2:A100", // le nom de la feuille de calcul souhaitée + les colonnes (lettres) et ou  les lignes (chiffre) qu'on souhaite afficher. Note : chaque ligne est stockée dans un tableau
+            spreadsheetId,
+            range
         });
-    
-    
+
+
         res.send(getRows.data.values);
 
 
@@ -47,40 +49,57 @@ exports.getProgramsList = (async (req, res) => {
 exports.getOneProgram = (async (req, res) => {
     try {
 
+        // en fonction de l'id de la ligne du programme
+        const { id } = req.params;
+        // console.log(req.params.id);
+
+        // ------------------------- ACCES SPREADSHEET------------------------------
         const auth = new google.auth.GoogleAuth({
             keyFile: "credentials.json", // le nom du fichier comprenant notre clé sheet
             scopes: "https://www.googleapis.com/auth/spreadsheets" // URL de l'API google sheets
         })
-    
+
         // creation d'un client pour auth
         const client = await auth.getClient();
-    
+
         // Créons un objet google sheet. On l'utilisera pour accéder à nos informations
-        const googleSheets = google.sheets({version: "v4", auth: client})
-    
+        const googleSheets = google.sheets({ version: "v4", auth: client })
+
         // On stocke l'id de notre feuille de calcul dans une variable pour la réutiliser plus facilement après.
         // Dans le lien de notre fichier sheets, c'est la partie entre "...d/" et "/edit..."
-        const spreadsheetId = "1kbbO4MP3NcBRPoJnZFQz5MZXi604GuJy2KzBuWzZFo0";
-    
-        // Test pour vérifier qu'on arrive à accéder à notre feuille de calcul
-        const metaData = await googleSheets.spreadsheets.get({
-            auth, // l'accès
-            spreadsheetId // l'id de lea feuille de calcul
-        });
-    
-        // Test de lecture de lignes : 
+        const spreadsheetId = `${process.env.SHEET_ID}`;
+        const range = "bdd_programmes!A:AP"; // On parcours tout le tableau
+        // Note : chaque ligne est stockée dans un tableau
+
+
+        // ------------------------------ ACCES DATA INSIDE --------------------------
         const getRows = await googleSheets.spreadsheets.values.get({
-            auth, 
+            auth,
             spreadsheetId,
-            range: "bdd_programmes" // le nom de la feuille de calcul souhaitée + les colonnes (lettres) et ou  les lignes (chiffre) qu'on souhaite afficher. Note : chaque ligne est stockée dans un tableau
+            range
         });
-    
-    
-        res.send(getRows.data);
+
+
+        const rows = getRows.data.values;
+        // console.log(rows);
+
+        // trouver la ligne qui correspond à l'id transmis - 1 car le sheet commence à 1 mais les tableaux à l'index 0
+        const row = rows[id - 1];
+
+        if (!row) {
+            return res.status(404).json({ message: "Program not found" });
+        }
+        
+        // On map les valeurs dans un objet.
+        const [ titre_programme, chapeau_titre, version_programme, introduction, chapeau_introduction, prix_formation, frais_dossier, sous_titre_photo_recto, footer, intit_objectifs, cont_objectifs, intit_duree, cont_duree, intit_dates, cont_dates, intit_public, cont_public, intit_prerequis, cont_pre_requis, sous_prerequis, intitule_page_verso, chapeau_intitule_verso, titre_programme_generique, contenu_programme_generique, titre_programme_autre, contenu_programme_autre, nom_formateur, metier, information_formateur, intit_moyens_peda, cont_moyens_peda, intit_accessibilite, cont_accessibilite, intit_delai, cont_delai, intit_qualite, cont_qualite, photo_entete_recto, photo_entete_verso, photo_cont_recto, photo_cont_verso, logo ] = row;
+        const program = { titre_programme, chapeau_titre, version_programme, introduction, chapeau_introduction, prix_formation, frais_dossier, sous_titre_photo_recto, footer, intit_objectifs, cont_objectifs, intit_duree, cont_duree, intit_dates, cont_dates, intit_public, cont_public, intit_prerequis, cont_pre_requis, sous_prerequis, intitule_page_verso, chapeau_intitule_verso, titre_programme_generique, contenu_programme_generique, titre_programme_autre, contenu_programme_autre, nom_formateur, metier, information_formateur, intit_moyens_peda, cont_moyens_peda, intit_accessibilite, cont_accessibilite, intit_delai, cont_delai, intit_qualite, cont_qualite, photo_entete_recto, photo_entete_verso, photo_cont_recto, photo_cont_verso, logo };
+        
+        console.log(program);
+        res.send(program);
 
 
     } catch (err) {
         console.error(err.message);
         res.status(500).json({ error: 'Failed to get programs from database' });
     }
-})
+});

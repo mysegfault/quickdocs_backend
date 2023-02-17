@@ -7,10 +7,10 @@ const { getProgramsList, getOneProgram } = require('./program.controller');
 router.route('/programmes')
     .get(getProgramsList)
 
-router.route('/program_recto')
+router.route('/programme_recto/:id')
     .get(getOneProgram)
 
-router.route('/program_verso')
+router.route('/programme_verso/:id')
     .get(getOneProgram)
 
 
