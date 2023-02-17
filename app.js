@@ -1,5 +1,5 @@
 const express = require("express");
-const cors = require("cors");
+const cors = require("cors"); //  (Cross-Origin Resource Sharing). Permet de contrôler les accès à une API provenant de domaines externes et protéger les ressources.
 require('dotenv').config();
 const axios = require('axios'); // Promise based HTTP client for the browser and node.js
 const session = require('express-session');
@@ -34,8 +34,7 @@ const port = 3000;
 
 
 // middleware pour la connexion entre notre application et notre BDD
-app.use(cors());  //  (Cross-Origin Resource Sharing). Permet de contrôler les accès à une API provenant de domaines externes et protéger les ressources.
-// app.use(cors({credentials: true, origin: true}))
+app.use(cors({ credentials: true, origin: true }));
 app.use(express.json()); //req.body
 app.use(express.urlencoded({extended: false}));  // permet d'accéder aux différents champs de formulaire. {extended: false} indique à Express d'utiliser un parseur simple
 
@@ -72,7 +71,7 @@ const isLoggedIn = (req, res, next) => {
 // ------------------------------------routes pour le passport-----------------------------------------
 
 // Si succès de la connexion (mais ce sera supprimer par la suite puisqu'on sera rediriger vers la page /programmes directement)
-app.get("/success",isLoggedIn, (req, res) => {
+app.get("/success", isLoggedIn, (req, res) => {
   res.send(`Bienvenue ${req.user.displayName}`)
 })
 
