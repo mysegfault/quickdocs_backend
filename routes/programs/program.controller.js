@@ -28,8 +28,6 @@ exports.getProgramsList = (async (req, res) => {
 
         // ------------------------------ ACCES DATA INSIDE --------------------------
 
-        // const { program_title } = req.body
-
         const getRows = await googleSheets.spreadsheets.values.get({
             auth, // l'accès
             spreadsheetId,
@@ -91,8 +89,91 @@ exports.getOneProgram = (async (req, res) => {
         }
         
         // On map les valeurs dans un objet.
-        const [ titre_programme, chapeau_titre, version_programme, introduction, chapeau_introduction, prix_formation, frais_dossier, sous_titre_photo_recto, footer, intit_objectifs, cont_objectifs, intit_duree, cont_duree, intit_dates, cont_dates, intit_public, cont_public, intit_prerequis, cont_pre_requis, sous_prerequis, intitule_page_verso, chapeau_intitule_verso, titre_programme_generique, contenu_programme_generique, titre_programme_autre, contenu_programme_autre, nom_formateur, metier, information_formateur, intit_moyens_peda, cont_moyens_peda, intit_accessibilite, cont_accessibilite, intit_delai, cont_delai, intit_qualite, cont_qualite, photo_entete_recto, photo_entete_verso, photo_cont_recto, photo_cont_verso, logo ] = row;
-        const program = { titre_programme, chapeau_titre, version_programme, introduction, chapeau_introduction, prix_formation, frais_dossier, sous_titre_photo_recto, footer, intit_objectifs, cont_objectifs, intit_duree, cont_duree, intit_dates, cont_dates, intit_public, cont_public, intit_prerequis, cont_pre_requis, sous_prerequis, intitule_page_verso, chapeau_intitule_verso, titre_programme_generique, contenu_programme_generique, titre_programme_autre, contenu_programme_autre, nom_formateur, metier, information_formateur, intit_moyens_peda, cont_moyens_peda, intit_accessibilite, cont_accessibilite, intit_delai, cont_delai, intit_qualite, cont_qualite, photo_entete_recto, photo_entete_verso, photo_cont_recto, photo_cont_verso, logo };
+        const [ titre_programme, 
+            chapeau_titre, 
+            version_programme, 
+            introduction, 
+            chapeau_introduction, 
+            prix_formation, 
+            frais_dossier, 
+            sous_titre_photo_recto, 
+            footer, 
+            intit_objectifs, 
+            cont_objectifs, 
+            intit_duree, 
+            cont_duree, 
+            intit_dates, 
+            cont_dates, 
+            intit_public, 
+            cont_public, 
+            intit_prerequis, 
+            cont_pre_requis, 
+            sous_prerequis, 
+            intitule_page_verso, 
+            chapeau_intitule_verso, 
+            titre_programme_generique, 
+            contenu_programme_generique, 
+            titre_programme_autre, 
+            contenu_programme_autre, 
+            nom_formateur, 
+            metier, 
+            information_formateur, 
+            intit_moyens_peda, 
+            cont_moyens_peda, 
+            intit_accessibilite, 
+            cont_accessibilite, 
+            intit_delai, 
+            cont_delai, 
+            intit_qualite, 
+            cont_qualite, 
+            photo_entete_recto, 
+            photo_entete_verso, 
+            photo_cont_recto, 
+            photo_cont_verso, 
+            logo ] = row;
+            
+        const program = { titre_programme, 
+            chapeau_titre, 
+            version_programme, 
+            introduction, 
+            chapeau_introduction, 
+            prix_formation, 
+            frais_dossier, 
+            sous_titre_photo_recto, 
+            footer, 
+            intit_objectifs, 
+            cont_objectifs, 
+            intit_duree, 
+            cont_duree, 
+            intit_dates, 
+            cont_dates, 
+            intit_public, 
+            cont_public, 
+            intit_prerequis, 
+            cont_pre_requis, 
+            sous_prerequis, 
+            intitule_page_verso, 
+            chapeau_intitule_verso, 
+            titre_programme_generique, 
+            contenu_programme_generique, 
+            titre_programme_autre, 
+            contenu_programme_autre, 
+            nom_formateur, 
+            metier, 
+            information_formateur, 
+            intit_moyens_peda, 
+            cont_moyens_peda, 
+            intit_accessibilite, 
+            cont_accessibilite, 
+            intit_delai, 
+            cont_delai, 
+            intit_qualite, 
+            cont_qualite, 
+            photo_entete_recto, 
+            photo_entete_verso, 
+            photo_cont_recto, 
+            photo_cont_verso, 
+            logo };
         
         console.log(program);
         res.send(program);
