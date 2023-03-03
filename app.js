@@ -9,6 +9,7 @@ const corsOptions = {
 // import des routes
 const routerProgram = require('./routes/programs/program.router');
 const routerUser = require('./routes/users/user.router');
+const routerIntern = require('./routes/interns/intern.router');
 
 
 const app = express();
@@ -23,7 +24,7 @@ app.use(express.urlencoded({extended: false}));  // permet d'accéder aux diffé
 
 
 // mobilisation des routers
-app.use(routerProgram, routerUser);
+app.use(routerProgram, routerUser, routerIntern);
 
 
 

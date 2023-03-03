@@ -20,22 +20,24 @@ exports.getProgramsList = (async (req, res) => {
 
         // On stocke l'id de notre feuille de calcul dans une variable pour la réutiliser plus facilement après.
         // Dans le lien de notre fichier sheets, c'est la partie entre "...d/" et "/edit..."
-        const spreadsheetId = `${process.env.SHEET_ID}`; // l'id de lea feuille de calcul
-        const range = "bdd_programmes!A2:A100" // A partir de la ligne 2, toute la colonnes A 
+        const spreadsheetId = `${process.env.SHEET_PROGRAMS_ID}`; // l'id de la feuille de calcul
+        const range = "bdd_programmes!A2:A500" // A partir de la ligne 2, toute la colonnes A 
         // Note : chaque ligne est stockée dans un tableau
 
 
 
         // ------------------------------ ACCES DATA INSIDE --------------------------
 
-        const getRows = await googleSheets.spreadsheets.values.get({
+        const getTitle = await googleSheets.spreadsheets.values.get({
             auth, // l'accès
             spreadsheetId,
             range
         });
 
+        const titles = getTitle.data.values;
 
-        res.send(getRows.data.values);
+        res.send(titles);
+        console.log(titles);
 
 
     } catch (err) {
@@ -44,6 +46,8 @@ exports.getProgramsList = (async (req, res) => {
     }
 });
 
+
+// Cette fonction sert à récupérer la ligne complète d'un seul programme.
 exports.getOneProgram = (async (req, res) => {
     try {
 
@@ -65,8 +69,8 @@ exports.getOneProgram = (async (req, res) => {
 
         // On stocke l'id de notre feuille de calcul dans une variable pour la réutiliser plus facilement après.
         // Dans le lien de notre fichier sheets, c'est la partie entre "...d/" et "/edit..."
-        const spreadsheetId = `${process.env.SHEET_ID}`;
-        const range = "bdd_programmes!A:AP"; // On parcours tout le tableau
+        const spreadsheetId = `${process.env.SHEET_PROGRAMS_ID}`;
+        const range = "bdd_programmes!A:AS"; // On parcours tout le tableau
         // Note : chaque ligne est stockée dans un tableau
 
 
@@ -87,94 +91,102 @@ exports.getOneProgram = (async (req, res) => {
         if (!row) {
             return res.status(404).json({ message: "Program not found" });
         }
-        
+
         // On map les valeurs dans un objet.
-        const [ titre_programme, 
-            chapeau_titre, 
-            version_programme, 
-            introduction, 
-            chapeau_introduction, 
-            prix_formation, 
-            frais_dossier, 
-            sous_titre_photo_recto, 
-            footer, 
-            intit_objectifs, 
-            cont_objectifs, 
-            intit_duree, 
-            cont_duree, 
-            intit_dates, 
-            cont_dates, 
-            intit_public, 
-            cont_public, 
-            intit_prerequis, 
-            cont_pre_requis, 
-            sous_prerequis, 
-            intitule_page_verso, 
-            chapeau_intitule_verso, 
-            titre_programme_generique, 
-            contenu_programme_generique, 
-            titre_programme_autre, 
-            contenu_programme_autre, 
-            nom_formateur, 
-            metier, 
-            information_formateur, 
-            intit_moyens_peda, 
-            cont_moyens_peda, 
-            intit_accessibilite, 
-            cont_accessibilite, 
-            intit_delai, 
-            cont_delai, 
-            intit_qualite, 
-            cont_qualite, 
-            photo_entete_recto, 
-            photo_entete_verso, 
-            photo_cont_recto, 
-            photo_cont_verso, 
-            logo ] = row;
-            
-        const program = { titre_programme, 
-            chapeau_titre, 
-            version_programme, 
-            introduction, 
-            chapeau_introduction, 
-            prix_formation, 
-            frais_dossier, 
-            sous_titre_photo_recto, 
-            footer, 
-            intit_objectifs, 
-            cont_objectifs, 
-            intit_duree, 
-            cont_duree, 
-            intit_dates, 
-            cont_dates, 
-            intit_public, 
-            cont_public, 
-            intit_prerequis, 
-            cont_pre_requis, 
-            sous_prerequis, 
-            intitule_page_verso, 
-            chapeau_intitule_verso, 
-            titre_programme_generique, 
-            contenu_programme_generique, 
-            titre_programme_autre, 
-            contenu_programme_autre, 
-            nom_formateur, 
-            metier, 
-            information_formateur, 
-            intit_moyens_peda, 
-            cont_moyens_peda, 
-            intit_accessibilite, 
-            cont_accessibilite, 
-            intit_delai, 
-            cont_delai, 
-            intit_qualite, 
-            cont_qualite, 
-            photo_entete_recto, 
-            photo_entete_verso, 
-            photo_cont_recto, 
-            photo_cont_verso, 
-            logo };
-        
+        const [titre_programme,
+            chapeau_titre,
+            version_programme,
+            introduction,
+            chapeau_introduction,
+            prix_formation,
+            frais_dossier,
+            titre_photo_recto,
+            sous_titre_photo_recto,
+            titre_footer,
+            footer,
+            footer_info_sasu,
+            intit_objectifs,
+            cont_objectifs,
+            intit_duree,
+            cont_duree,
+            intit_dates,
+            cont_dates,
+            intit_public,
+            cont_public,
+            intit_prerequis,
+            cont_pre_requis,
+            sous_prerequis,
+            intitule_page_verso,
+            chapeau_intitule_verso,
+            titre_programme_generique,
+            contenu_programme_generique,
+            titre_programme_autre,
+            contenu_programme_autre,
+            nom_formateur,
+            metier,
+            information_formateur,
+            intit_moyens_peda,
+            cont_moyens_peda,
+            intit_accessibilite,
+            cont_accessibilite,
+            intit_delai,
+            cont_delai,
+            intit_qualite,
+            cont_qualite,
+            photo_entete_recto,
+            photo_cont_recto,
+            photo_entete_verso,
+            photo_cont_verso,
+            logo] = row;
+
+        const program = {
+            titre_programme,
+            chapeau_titre,
+            version_programme,
+            introduction,
+            chapeau_introduction,
+            prix_formation,
+            frais_dossier,
+            titre_photo_recto,
+            sous_titre_photo_recto,
+            titre_footer,
+            footer,
+            footer_info_sasu,
+            intit_objectifs,
+            cont_objectifs,
+            intit_duree,
+            cont_duree,
+            intit_dates,
+            cont_dates,
+            intit_public,
+            cont_public,
+            intit_prerequis,
+            cont_pre_requis,
+            sous_prerequis,
+            intitule_page_verso,
+            chapeau_intitule_verso,
+            titre_programme_generique,
+            contenu_programme_generique,
+            titre_programme_autre,
+            contenu_programme_autre,
+            nom_formateur,
+            metier,
+            information_formateur,
+            intit_moyens_peda,
+            cont_moyens_peda,
+            intit_accessibilite,
+            cont_accessibilite,
+            intit_delai,
+            cont_delai,
+            intit_qualite,
+            cont_qualite,
+            photo_entete_recto,
+            photo_cont_recto,
+            photo_entete_verso,
+            photo_cont_verso,
+            logo
+        };
+
         console.log(program);
         res.send(program);
 

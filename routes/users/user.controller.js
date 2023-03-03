@@ -31,8 +31,8 @@ exports.postAuthUser = (async (req, res) => {
 
         // On stocke l'id de notre feuille de calcul dans une variable pour la réutiliser plus facilement après.
         // Dans le lien de notre fichier sheets, c'est la partie entre "...d/" et "/edit..."
-        const spreadsheetId = `${process.env.SHEET_USERS_ID}`; // l'id de lea feuille de calcul
-        const range = "users!A2:C" // A partir de la ligne 2 sur les colonnes A et B
+        const spreadsheetId = `${process.env.SHEET_USERS_ID}`; // l'id de la feuille de calcul
+        const range = "users!A2:B" // A partir de la ligne 2 sur les colonnes A et B
         // Note : chaque ligne est stockée dans un tableau
 
 
@@ -55,21 +55,6 @@ exports.postAuthUser = (async (req, res) => {
         // on définit la const authorizedUsers pour vérifier, parmis la 1ère colonne (rang 0), celle des id google, si l'id transmis est dans la liste.
         const authorizedUsers = rows.map(col => col[0]);
         console.log(authorizedUsers);
-
-
-        // //  Si l'id transmis est inclu dans la liste (dans la première colonne, rang 0), on affiche la ligne de l'utilisateurs associé (rowUser)
-        // if (authorizedUsers.includes(id)) {
-        //     // pour l'afficher, il faut parcourir authorizedUsers
-        //     for (let i = 0; i < authorizedUsers.length; i++) {
-        //         if (authorizedUsers[i].includes(id)) {
-        //             console.log(rows[i]);
-        //             res.send(rows[i]);
-        //         }
-        //       }
-        // } else {
-        //   // Si l'utilisateur n'est pas autorisé, renvoyez une erreur
-        //   res.status(403).json({ error: 'Vous n\'avez pas accès' });
-        // }
 
         res.send(authorizedUsers);
 
