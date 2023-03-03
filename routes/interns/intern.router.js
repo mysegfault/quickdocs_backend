@@ -10,7 +10,6 @@ router.route('/intern/:id')
 router.route('/intern')
     .post(postOneIntern)
 
-
 router.route('/interns')
     .post(postInternToReturn)
 
