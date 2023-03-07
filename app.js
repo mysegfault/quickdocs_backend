@@ -16,7 +16,6 @@ const app = express();
 const port = 3000;
 
 
-
 // middleware pour la connexion entre notre application et notre BDD
 app.use(cors(corsOptions));
 app.use(express.json()); //req.body
