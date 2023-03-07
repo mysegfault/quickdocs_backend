@@ -1,6 +1,8 @@
 require('dotenv').config()
 const { google } = require('googleapis'); // pour utiliser l'API de google
 
+
+
 //  Cette fonction sert à récupérer toutes les information d'un stagiaire dont on a besoin pour remplir le template de document à éditer
 exports.getOneIntern = (async (req, res) => {
     try {
@@ -24,7 +26,7 @@ exports.getOneIntern = (async (req, res) => {
         // On stocke l'id de notre feuille de calcul dans une variable pour la réutiliser plus facilement après.
         // Dans le lien de notre fichier sheets, c'est la partie entre "...d/" et "/edit..."
         const spreadsheetId = `${process.env.SHEET_INTERNS_ID}`; // l'id de la feuille de calcul
-        const range = "stagiaires!A2:M" // A partir de la ligne 2 sur les colonnes de A à M
+        const range = "stagiaires!A2:Z" // A partir de la ligne 2 sur les colonnes de A à M
         // Note : chaque ligne est stockée dans un tableau
 
 
@@ -48,7 +50,7 @@ exports.getOneIntern = (async (req, res) => {
             return res.status(404).json({ message: "Intern not found" });
         }
 
-        const [ intern_code,
+        const [intern_code,
             intern_genre,
             intern_lastname,
             intern_firstname,
@@ -56,30 +58,54 @@ exports.getOneIntern = (async (req, res) => {
             intern_zipcode,
             intern_city,
             intern_program,
+            program_duration,
+            module_format,
             intern_firstdate,
             intern_lastdate,
             intern_duration,
             intern_achievement,
-            intern_finance ] = row;
+            intern_finance,
+            number_convention,
+            module_number,
+            program_format,
+            number_intern,
+            training_cost,
+            learning_cost,
+            total_cost,
+            deposit,
+            convention_date,
+            first_training_date ] = row;
 
-            const internInfo = {
-                intern_code,
-                intern_genre,
-                intern_lastname,
-                intern_firstname,
-                intern_adress,
-                intern_zipcode,
-                intern_city,
-                intern_program,
-                intern_firstdate,
-                intern_lastdate,
-                intern_duration,
-                intern_achievement,
-                intern_finance };
+        const internInfo = {
+            intern_code,
+            intern_genre,
+            intern_lastname,
+            intern_firstname,
+            intern_adress,
+            intern_zipcode,
+            intern_city,
+            intern_program,
+            program_duration,
+            module_format,
+            intern_firstdate,
+            intern_lastdate,
+            intern_duration,
+            intern_achievement,
+            intern_finance,            
+            number_convention,
+            module_number,
+            program_format,
+            number_intern,
+            training_cost,
+            learning_cost,
+            total_cost,
+            deposit,
+            convention_date,
+            first_training_date };
 
 
-                console.log(internInfo);
-                res.send(internInfo);
+        res.json(internInfo);
+        console.log(internInfo);
 
 
     } catch (err) {
@@ -107,7 +133,7 @@ exports.postOneIntern = (async (req, res) => {
         // On stocke l'id de notre feuille de calcul dans une variable pour la réutiliser plus facilement après.
         // Dans le lien de notre fichier sheets, c'est la partie entre "...d/" et "/edit..."
         const spreadsheetId = `${process.env.SHEET_INTERNS_ID}`; // l'id de la feuille de calcul
-        const range = "stagiaires!A2:M" // A partir de la ligne 2 sur les colonnes de A à M
+        const range = "stagiaires!A2:Z" // A partir de la ligne 2 sur les colonnes de A à M
         // Note : chaque ligne est stockée dans un tableau
 
 
@@ -123,11 +149,23 @@ exports.postOneIntern = (async (req, res) => {
             intern_zipcode,
             intern_city,
             intern_program,
+            program_duration,
+            module_format,
             intern_firstdate,
             intern_lastdate,
             intern_duration,
             intern_achievement,
-            intern_finance } = req.body
+            intern_finance,
+            number_convention,
+            module_number,
+            program_format,
+            number_intern,
+            training_cost,
+            learning_cost,
+            total_cost,
+            deposit,
+            convention_date,
+            first_training_date } = req.body
 
 
         const response = await googleSheets.spreadsheets.values.append({
@@ -145,11 +183,23 @@ exports.postOneIntern = (async (req, res) => {
                         intern_zipcode,
                         intern_city,
                         intern_program,
+                        program_duration,
+                        module_format,
                         intern_firstdate,
                         intern_lastdate,
                         intern_duration,
                         intern_achievement,
-                        intern_finance]
+                        intern_finance,
+                        number_convention,
+                        module_number,
+                        program_format,
+                        number_intern,
+                        training_cost,
+                        learning_cost,
+                        total_cost,
+                        deposit,
+                        convention_date,
+                        first_training_date ]
                 ]
             }
         });
@@ -202,9 +252,6 @@ exports.postInternToReturn = (async (req, res) => {
 
         console.log("intern_code ici: ", intern_code);
 
-
-        // const index = allInternCode[0].indexOf(intern_code);
-
         let index = -1;
 
         for (let i = 0; i < allInternCode.length; i++) {
@@ -222,6 +269,54 @@ exports.postInternToReturn = (async (req, res) => {
 
         res.json(id)
         console.log(id);
+
+
+    } catch (err) {
+        console.error(err.message);
+    }
+});
+
+
+// Cette fonction retourne tous les id de la ligne lié au code du stagiaire rentré dans l'input.
+exports.getAllCodeIntern = (async (req, res) => {
+    try {
+        // ------------------------- ACCES SPREADSHEET------------------------------
+        const auth = new google.auth.GoogleAuth({
+            keyFile: "credentials.json", // le nom du fichier comprenant notre clé sheet
+            scopes: "https://www.googleapis.com/auth/spreadsheets" // URL de l'API google sheets
+        })
+
+        // creation d'un client pour auth
+        const client = await auth.getClient();
+
+        // Créons un objet google sheet. On l'utilisera pour accéder à nos informations
+        const googleSheets = google.sheets({ version: "v4", auth: client })
+
+        // On stocke l'id de notre feuille de calcul dans une variable pour la réutiliser plus facilement après.
+        // Dans le lien de notre fichier sheets, c'est la partie entre "...d/" et "/edit..."
+        const spreadsheetId = `${process.env.SHEET_INTERNS_ID}`; // l'id de la feuille de calcul
+        const range = "stagiaires!A2:A" // Dans la colonne A, à partie de la ligne 2 pour éviter les titres.
+
+
+
+        // ------------------------------ ACCES DATA INSIDE --------------------------
+
+        const { intern_code: intern_code } = req.body
+
+        const response = await googleSheets.spreadsheets.values.get({
+            auth, // l'accès
+            spreadsheetId, // l'id de la feuille de ca calcul
+            range, // l'endroit dans la feuille de calcul ou on recherche notre données
+        });
+
+        // Toutes les données de la colonne A donc tous les code de satgaires.
+        // Attention allInternCode est un tableau de tableaux.
+        const allInternCode = response.data.values
+        console.log("allInternCode ici: ", allInternCode);
+
+
+        res.json(allInternCode)
+        console.log(allInternCode);
 
 
     } catch (err) {

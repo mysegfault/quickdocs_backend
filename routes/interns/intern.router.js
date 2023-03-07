@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { getOneIntern, postOneIntern, postInternToReturn } = require('./intern.controller');
+const { getOneIntern, postOneIntern, postInternToReturn, getAllCodeIntern } = require('./intern.controller');
 
 
 
@@ -12,6 +12,9 @@ router.route('/intern')
 
 router.route('/interns')
     .post(postInternToReturn)
+
+router.route('/internscodes')
+    .get(getAllCodeIntern)
 
     
 
