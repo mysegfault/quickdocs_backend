@@ -1,10 +1,3 @@
-// require('dotenv').config()
-// const jwt = require('jsonwebtoken');
-// // const mongoose = require('mongoose');
-// const { User } = require("../../models/user_model");
-// const bcrypt = require('bcrypt');
-// // pour renforcer le hachage de password :
-// const saltRounds = 10;
 require('dotenv').config()
 const { google } = require('googleapis'); // pour utiliser l'API de google
 
