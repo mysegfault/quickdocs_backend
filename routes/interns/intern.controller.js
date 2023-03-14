@@ -3,7 +3,7 @@ const { google } = require('googleapis'); // pour utiliser l'API de google
 
 
 
-//  Cette fonction sert à récupérer toutes les information d'un stagiaire dont on a besoin pour remplir le template de document à éditer
+//  Cette fonction sert à récupérer toutes les informations d'un stagiaire dont on a besoin pour remplir le template de document à éditer
 exports.getOneIntern = (async (req, res) => {
     try {
 
@@ -213,7 +213,7 @@ exports.postOneIntern = (async (req, res) => {
     }
 });
 
-// Cette fonction retourne tous les id de la ligne lié au code du stagiaire rentré dans l'input.
+// Cette fonction permet de récupérer l'id du stagiaire dont on a rentrer le "code stagiaire" dans le champs en front.
 exports.postInternToReturn = (async (req, res) => {
     try {
         // ------------------------- ACCES SPREADSHEET------------------------------
@@ -277,7 +277,7 @@ exports.postInternToReturn = (async (req, res) => {
 });
 
 
-// Cette fonction retourne tous les id de la ligne lié au code du stagiaire rentré dans l'input.
+// Cette fonction retourne tous les "code stagiaires" pour les proposer dans le champs concerné (mat-autocomplete en front).
 exports.getAllCodeIntern = (async (req, res) => {
     try {
         // ------------------------- ACCES SPREADSHEET------------------------------
