@@ -50,58 +50,9 @@ exports.getOneIntern = (async (req, res) => {
             return res.status(404).json({ message: "Intern not found" });
         }
 
-        const [intern_code,
-            intern_genre,
-            intern_lastname,
-            intern_firstname,
-            intern_adress,
-            intern_zipcode,
-            intern_city,
-            intern_program,
-            program_duration,
-            module_format,
-            intern_firstdate,
-            intern_lastdate,
-            intern_duration,
-            intern_achievement,
-            intern_finance,
-            number_convention,
-            module_number,
-            program_format,
-            number_intern,
-            training_cost,
-            learning_cost,
-            total_cost,
-            deposit,
-            convention_date,
-            first_training_date ] = row;
+        const [intern_code, intern_genre, intern_lastname, intern_firstname, intern_adress, intern_zipcode, intern_city, intern_program, program_duration, module_format, intern_firstdate, intern_lastdate, intern_duration, intern_achievement, intern_finance, number_convention, module_number, program_format, number_intern, training_cost, learning_cost, total_cost, deposit, convention_date, first_training_date ] = row;
 
-        const internInfo = {
-            intern_code,
-            intern_genre,
-            intern_lastname,
-            intern_firstname,
-            intern_adress,
-            intern_zipcode,
-            intern_city,
-            intern_program,
-            program_duration,
-            module_format,
-            intern_firstdate,
-            intern_lastdate,
-            intern_duration,
-            intern_achievement,
-            intern_finance,            
-            number_convention,
-            module_number,
-            program_format,
-            number_intern,
-            training_cost,
-            learning_cost,
-            total_cost,
-            deposit,
-            convention_date,
-            first_training_date };
+        const internInfo = { intern_code, intern_genre, intern_lastname, intern_firstname, intern_adress, intern_zipcode, intern_city, intern_program, program_duration, module_format, intern_firstdate, intern_lastdate, intern_duration, intern_achievement,  intern_finance, number_convention, module_number, program_format, number_intern, training_cost, learning_cost, total_cost, deposit, convention_date, first_training_date };
 
 
         res.json(internInfo);
@@ -277,7 +228,7 @@ exports.postInternToReturn = (async (req, res) => {
 });
 
 
-// Cette fonction retourne tous les "code stagiaires" pour les proposer dans le champs concerné (mat-autocomplete en front).
+// Cette fonction retourne tous les "codes stagiaires" pour les proposer dans le champs concerné (mat-autocomplete en front).
 exports.getAllCodeIntern = (async (req, res) => {
     try {
         // ------------------------- ACCES SPREADSHEET------------------------------
