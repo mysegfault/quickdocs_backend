@@ -4,12 +4,8 @@ const { google } = require('googleapis'); // pour utiliser l'API de google
 
 // Fonction qui nous permet de filtrer les utilisateurs de Google pour ne laisser passer que les utilisateurs autorisés, en fonction de l'id Gooogle.
 exports.postAuthUser = (async (req, res) => {
+	
     try {
-
-        // en fonction de l'id google de l'utilisateur
-        const { id } = req.params;
-        // console.log(req.params.id);
-
         // ------------------------- ACCES SPREADSHEET------------------------------
         const auth = new google.auth.GoogleAuth({
             keyFile: "credentials.json", // le nom du fichier comprenant notre clé sheet
@@ -55,5 +51,3 @@ exports.postAuthUser = (async (req, res) => {
         res.status(500).json({ error: 'Failed to get users from database' });
     }
 })
-
-
